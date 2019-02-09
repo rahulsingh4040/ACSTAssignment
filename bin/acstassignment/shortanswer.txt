@@ -1,7 +1,28 @@
-3
+8
+SA
 What is the capital of India?
 Delhi
+SA
 What does ICC stands for?
 International Cricket Council
+SA
 How many states are there in India?
 29
+TF
+Delhi is Capital of India?
+True
+TF
+Ankit is Rahul's son?
+True
+MCQ
+Which of the following is India's Capital?
+a.)New Delhi	b.)Kolkata	c.)Chennai	d.)Mumbai
+a
+MCQ
+How many players are there in cricket?
+a.)11	b.)10	c.)15	d.)9
+a
+MCQ
+When did India got Independence?
+a.)1857   b.)1950   c.)1947   d.)1948
+c
