@@ -4,10 +4,10 @@ import java.util.*;
 import java.io.FileReader;
 import java.io.BufferedReader;
 
-class player{
+class Player{
 	public String name;
 	public static int score;
-	public player() {
+	public Player() {
 		name = "";
 		score = 0;
 	}
@@ -16,7 +16,8 @@ class player{
 	}
 }
 
-abstract class Question extends player{
+
+abstract class Question{
 	
 	String q_txt;
 	String q_ans;
@@ -52,11 +53,11 @@ abstract class Question extends player{
 }
 
 
-class shortans extends Question{
+class QuestionSA extends Question{
 	
 	static int marks = 20;
 	
-	shortans(){
+	QuestionSA(){
 		super();
 	}
 	
@@ -68,12 +69,12 @@ class shortans extends Question{
 	public void pt_inc(String ans, String q_ans) {
 		if(check_ans(ans,q_ans)==1) {
 			System.out.println("Correct answer 20 points awarded!!!");
-			score+=marks;
+			Player.score+=marks;
 		}
 		else if(check_ans(ans,q_ans)==3){
 			System.out.println("Incorrect answer 20 points deducted!!!");
 			System.out.println("Correct answer : "+ q_ans);
-			score-=marks;
+			Player.score-=marks;
 		}
 		else {
 			System.out.println("Question skipped...");
@@ -81,11 +82,11 @@ class shortans extends Question{
 	}
 }
 
-class  Truefalse extends Question{
+class  QuestionTF extends Question{
 	
 	static int marks = 10;
 	
-	Truefalse(){
+	QuestionTF(){
 		super();
 	}
 	
@@ -97,12 +98,12 @@ class  Truefalse extends Question{
 	public void pt_inc(String ans, String q_ans) {
 		if(check_ans(ans,q_ans)==1) {
 			System.out.println("Correct answer 10 points awarded!!!");
-			score+=marks;
+			Player.score+=marks;
 		}
 		else if(check_ans(ans,q_ans)==3){
 			System.out.println("Incorrect answer 10 points deducted!!!");
 			System.out.println("Correct answer : "+ q_ans);
-			score-=marks;
+			Player.score-=marks;
 		}
 		else {
 			System.out.println("Question skipped...");
@@ -110,11 +111,11 @@ class  Truefalse extends Question{
 	}
 }
 
-class Mcqs extends Question{
+class QuestionMC extends Question{
 	
 	static int marks = 10;
 	
-	Mcqs(){
+	QuestionMC(){
 		super();
 	}
 	
@@ -127,12 +128,12 @@ class Mcqs extends Question{
 	public void pt_inc(String ans, String q_ans) {
     	if(check_ans(ans,q_ans)==1) {
     		System.out.println("Correct answer 10 points awarded!!!");
-			score+=marks;
+			Player.score+=marks;
 		}
 		else if(check_ans(ans,q_ans)==3){
 			System.out.println("Incorrect answer 10 points deducted!!!");
 			System.out.println("Correct answer : "+ q_ans);
-			score-=marks;
+			Player.score-=marks;
 		}
 		else {
 			System.out.println("Question skipped...");
@@ -140,51 +141,51 @@ class Mcqs extends Question{
 	}
 }
 
-public class Quiz {
+public class QuizBowl {
 	public static void main(String args[]) throws Exception{
 		
 		BufferedReader fin = new BufferedReader(new FileReader("C:\\Users\\Rahul_Singh\\Desktop\\acst assignment\\acstassignment\\src\\acstassignment\\questions.txt"));
 		Scanner inp = new Scanner(System.in);
 		Random rand = new Random();
 		
-		player p = new player();
+		Player p = new Player();
 		
 		System.out.print("Enter name : ");
 		
 		String name = inp.nextLine();
 		p.get_details(name);
+		System.out.println("Hello "+ p.name + "!!!");
 		
-		System.out.println("Hello "+p.name+"!!!");
-		
-		shortans[] sa = new shortans[100];
-		Mcqs[] mc = new Mcqs[100];
-		Truefalse[] tf = new Truefalse[100];
+		QuestionSA[] sa = new QuestionSA[100];
+		QuestionMC[] mc = new QuestionMC[100];
+		QuestionTF[] tf = new QuestionTF[100];
 		
 		int cnt_mc=0, cnt_sa=0, cnt_tf=0;
-		int cnt_file = Integer.valueOf(fin.readLine());
 		
+		int cnt_file = Integer.valueOf(fin.readLine());
+
 		for(int i=0; i<cnt_file; i++) {
 			String qtp = fin.readLine();
 			if("SA".equals(qtp)) {
-				sa[cnt_sa] = new shortans();
+				sa[cnt_sa] = new QuestionSA();
 				sa[cnt_sa].get_ques(fin);
 				cnt_sa++;
 			}
 			
 			else if("TF".equals(qtp)) {
-				tf[cnt_tf] = new Truefalse();
+				tf[cnt_tf] = new QuestionTF();
 				tf[cnt_tf].get_ques(fin);
 				cnt_tf++;
 			}
 			
 			else if("MCQ".equals(qtp)) {
-				mc[cnt_mc] = new Mcqs();
+				mc[cnt_mc] = new QuestionMC();
 				mc[cnt_mc].get_ques(fin);
 				cnt_mc++;
 			}
 		}
 		
-		System.out.print("Enter no of questions you want to attempt :");
+		System.out.print("Enter no of questions you want to attempt out of "+cnt_file+" (in numbers):");
 		int cnt = inp.nextInt();
 		
 		List<Integer> arr_sa = new ArrayList<>();
@@ -203,9 +204,17 @@ public class Quiz {
 		Collections.shuffle(arr_tf);
 		Collections.shuffle(arr_mc);
 		
-		if(cnt<=cnt_file) {
-			//System.out.println("Here");
+		if(cnt>cnt_file) {
+			while(cnt>cnt_file) {
+				System.out.print("Number of questions exceeded questions in file.... ");
+				System.out.print("Enter again : ");
+				cnt = inp.nextInt();
+			}
+		}
+		
+	
 			int t_no, q_no,r_sa=0,r_tf=0,r_mc=0;;
+			
 			for(int i=0; i<cnt; i++) {
 				
 				System.out.println();
@@ -220,7 +229,7 @@ public class Quiz {
 					System.out.print("Q"+(i+1)+".)");
 					sa[q_no].print_ques();
 					System.out.print("Enter answer(single word/Skip - 20 points) : ");
-					String answer = inp.nextLine();
+					String answer = inp.next();
 					sa[q_no].pt_inc(answer, sa[q_no].q_ans);
 				}
 				
@@ -234,7 +243,7 @@ public class Quiz {
 					System.out.print("Q"+(i+1)+".)");
 					mc[q_no].print_ques();
 					System.out.print("Enter answer(a,b,c,d)/Skip - 10 points) : ");
-					String answer = inp.nextLine();
+					String answer = inp.next();
 					mc[q_no].pt_inc(answer, mc[q_no].q_ans);
 				}
 				
@@ -248,16 +257,14 @@ public class Quiz {
 					System.out.print("Q"+(i+1)+".)");
 					tf[q_no].print_ques();
 					System.out.print("Enter answer(True/False/Skip - 10 points) : ");
-					String answer = inp.nextLine();
+					String answer = inp.next();
 					tf[q_no].pt_inc(answer, tf[q_no].q_ans);
 				}
 			}
 			
-			System.out.println("\n"+p.name + " gets "+ player.score +" points.");
-		}
-		else {
-			System.out.println("Number of questions exceeded questions in file.... ");
-		}
+			System.out.println("\n"+p.name + " gets "+ Player.score +" points.");
+
+
 		
 		inp.close();
 		fin.close();
