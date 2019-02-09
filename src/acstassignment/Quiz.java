@@ -143,7 +143,7 @@ class Mcqs extends Question{
 public class Quiz {
 	public static void main(String args[]) throws Exception{
 		
-		BufferedReader fin = new BufferedReader(new FileReader("C:\\Users\\Rahul_Singh\\Desktop\\acst assignment\\acstassignment\\src\\acstassignment\\shortanswer.txt"));
+		BufferedReader fin = new BufferedReader(new FileReader("C:\\Users\\Rahul_Singh\\Desktop\\acst assignment\\acstassignment\\src\\acstassignment\\questions.txt"));
 		Scanner inp = new Scanner(System.in);
 		Random rand = new Random();
 		
