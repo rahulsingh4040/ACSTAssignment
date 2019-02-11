@@ -160,19 +160,38 @@ class QuestionMC extends Question{
 /* main class*/
 public class QuizBowl {
 	public static void main(String args[]) throws Exception{
-		
-		BufferedReader fin = new BufferedReader(new FileReader("C:\\Users\\Rahul_Singh\\Desktop\\acst assignment\\acstassignment\\src\\acstassignment\\questions.txt"));
-		FileOutputStream fout = new FileOutputStream("C:\\Users\\Rahul_Singh\\Desktop\\acst assignment\\acstassignment\\src\\acstassignment\\result.txt",true);
 		Scanner inp = new Scanner(System.in);
+		String fpath = System.getProperty("user.dir") + "\\src\\acstassignment\\questions.txt";
+		String rpath = System.getProperty("user.dir") + "\\src\\acstassignment\\result.txt";
+		String fchc;
+		System.out.print("Enter 1 or User defined file input or any other key for default : ");
+		fchc = inp.next();
+		if("1".equals(fchc)) {
+			System.out.print("Enter questions file path : ");
+			fpath = inp.next();
+			System.out.print("Enter results file path : ");
+			rpath = inp.next();
+		}
+		
+		BufferedReader fin = new BufferedReader(new FileReader(fpath));
+		FileOutputStream fout = new FileOutputStream(rpath,true);
+		
 		Random rand = new Random();
 		
 		Player p = new Player();
 		
 		System.out.print("Enter First name : ");		
-		String f_name = inp.nextLine();
+		String f_name = inp.next();
 		
+		
+		if("".equals(f_name)) {
+			while("".equals(f_name)) {
+				System.out.print("Enter First name again : ");		
+				f_name = inp.next();
+			}
+		}
 		System.out.print("Enter Last name : ");		
-		String l_name = inp.nextLine();
+		String l_name = inp.next();
 		
 		p.get_details(f_name, l_name);
 		System.out.println("Hello "+ p.f_name + " " + p.l_name + "!!!");
@@ -206,8 +225,7 @@ public class QuizBowl {
 			}
 		}
 		
-		System.out.print("Enter no of questions you want to attempt out of "+cnt_file+" (in numbers):");
-		int cnt = inp.nextInt();
+		
 		
 		/* Logic to randomly choose any of the question from file */
 		List<Integer> arr_sa = new ArrayList<>();
@@ -225,65 +243,131 @@ public class QuizBowl {
 		Collections.shuffle(arr_sa);
 		Collections.shuffle(arr_tf);
 		Collections.shuffle(arr_mc);
+		String chc;
+		System.out.println("You want specific questions(SA, TF, MCQ, Random):");
+		chc = inp.next();
+		int t_no, q_no,r_sa=0,r_tf=0,r_mc=0;
+		if("random".equalsIgnoreCase(chc)) {
+			System.out.print("Enter no of questions you want to attempt out of "+cnt_file+" (in numbers):");
+			int cnt = inp.nextInt();
+			if(cnt>cnt_file || cnt<=0) {
+				while(cnt>cnt_file || cnt<=0) {
+					System.out.print("Invalid number of questions in file.... ");
+					System.out.print("Enter again : ");
+					cnt = inp.nextInt();
+				}
+			}
+			
 		
-		if(cnt>cnt_file) {
-			while(cnt>cnt_file) {
-				System.out.print("Number of questions exceeded questions in file.... ");
-				System.out.print("Enter again : ");
-				cnt = inp.nextInt();
+				
+				
+				for(int i=0; i<cnt; i++) {
+					
+					System.out.println();
+					t_no = rand.nextInt(3) + 1;  	// Logic to randomly choose question type
+					if(t_no==1) {					// Short answer type question chosen
+						if(r_sa>=cnt_sa) {
+							i--;
+							continue;
+						}
+						q_no = arr_sa.get(r_sa);
+						r_sa++;
+						System.out.print("Q"+(i+1)+".)");
+						sa[q_no].print_ques();
+						System.out.print("Enter answer(single word/Skip - 20 points) : ");
+						String answer = inp.next();
+						sa[q_no].pt_inc(answer, sa[q_no].q_ans);
+					}
+					
+					else if(t_no==2) {				// MCQ type question chosen
+						if(r_mc>=cnt_mc) {
+							i--;
+							continue;
+						}
+						q_no = arr_mc.get(r_mc);
+						r_mc++;
+						System.out.print("Q"+(i+1)+".)");
+						mc[q_no].print_ques();
+						System.out.print("Enter answer(a,b,c,d)/Skip - 10 points) : ");
+						String answer = inp.next();
+						mc[q_no].pt_inc(answer, mc[q_no].q_ans);
+					}
+					
+					else if(t_no==3) {			// True false type question chosen
+						if(r_tf>=cnt_tf) {
+							i--;
+							continue;
+						}
+						q_no = arr_tf.get(r_tf);
+						r_tf++;
+						System.out.print("Q"+(i+1)+".)");
+						tf[q_no].print_ques();
+						System.out.print("Enter answer(True/False/Skip - 10 points) : ");
+						String answer = inp.next();
+						tf[q_no].pt_inc(answer, tf[q_no].q_ans);
+					}
+				}
+		}
+		else if("SA".equalsIgnoreCase(chc)) {
+			System.out.print("Enter no of questions you want to attempt out of "+cnt_sa+" (in numbers):");
+			int cnt = inp.nextInt();
+			if(cnt>cnt_sa || cnt<=0) {
+				while(cnt>cnt_sa|| cnt<=0) {
+					System.out.print("Invalid number of questions in file.... ");
+					System.out.print("Enter again : ");
+					cnt = inp.nextInt();
+				}
+			}
+			for(int i=0; i<cnt; i++) {
+				q_no = arr_sa.get(r_sa);
+				r_sa++;
+				System.out.print("Q"+(i+1)+".)");
+				sa[q_no].print_ques();
+				System.out.print("Enter answer(single word/Skip - 20 points) : ");
+				String answer = inp.next();
+				sa[q_no].pt_inc(answer, sa[q_no].q_ans);
 			}
 		}
-		
-	
-			int t_no, q_no,r_sa=0,r_tf=0,r_mc=0;;
-			
-			for(int i=0; i<cnt; i++) {
-				
-				System.out.println();
-				t_no = rand.nextInt(3) + 1;  	// Logic to randomly choose question type
-				if(t_no==1) {					// Short answer type question chosen
-					if(r_sa>=cnt_sa) {
-						i--;
-						continue;
-					}
-					q_no = arr_sa.get(r_sa);
-					r_sa++;
-					System.out.print("Q"+(i+1)+".)");
-					sa[q_no].print_ques();
-					System.out.print("Enter answer(single word/Skip - 20 points) : ");
-					String answer = inp.next();
-					sa[q_no].pt_inc(answer, sa[q_no].q_ans);
-				}
-				
-				else if(t_no==2) {				// MCQ type question chosen
-					if(r_mc>=cnt_mc) {
-						i--;
-						continue;
-					}
-					q_no = arr_mc.get(r_mc);
-					r_mc++;
-					System.out.print("Q"+(i+1)+".)");
-					mc[q_no].print_ques();
-					System.out.print("Enter answer(a,b,c,d)/Skip - 10 points) : ");
-					String answer = inp.next();
-					mc[q_no].pt_inc(answer, mc[q_no].q_ans);
-				}
-				
-				else if(t_no==3) {			// True false type question chosen
-					if(r_tf>=cnt_tf) {
-						i--;
-						continue;
-					}
-					q_no = arr_tf.get(r_tf);
-					r_tf++;
-					System.out.print("Q"+(i+1)+".)");
-					tf[q_no].print_ques();
-					System.out.print("Enter answer(True/False/Skip - 10 points) : ");
-					String answer = inp.next();
-					tf[q_no].pt_inc(answer, tf[q_no].q_ans);
+		else if("MCQ".equalsIgnoreCase(chc)) {
+			System.out.print("Enter no of questions you want to attempt out of "+cnt_mc+" (in numbers):");
+			int cnt = inp.nextInt();
+			if(cnt>cnt_mc || cnt<=0) {
+				while(cnt>cnt_mc || cnt<=0) {
+					System.out.print("Invalid number of questions in file.... ");
+					System.out.print("Enter again : ");
+					cnt = inp.nextInt();
 				}
 			}
-			
+			for(int i=0; i<cnt; i++) {
+				q_no = arr_mc.get(r_mc);
+				r_mc++;
+				System.out.print("Q"+(i+1)+".)");
+				mc[q_no].print_ques();
+				System.out.print("Enter answer(single word/Skip - 20 points) : ");
+				String answer = inp.next();
+				mc[q_no].pt_inc(answer, mc[q_no].q_ans);
+			}
+		}
+		else if("TF".equalsIgnoreCase(chc)) {
+			System.out.print("Enter no of questions you want to attempt out of "+cnt_tf+" (in numbers):");
+			int cnt = inp.nextInt();
+			if(cnt>cnt_tf || cnt<=0) {
+				while(cnt>cnt_tf || cnt<=0) {
+					System.out.print("Invalid number of questions in file.... ");
+					System.out.print("Enter again : ");
+					cnt = inp.nextInt();
+				}
+			}
+			for(int i=0; i<cnt; i++) {
+				q_no = arr_tf.get(r_tf);
+				r_tf++;
+				System.out.print("Q"+(i+1)+".)");
+				tf[q_no].print_ques();
+				System.out.print("Enter answer(single word/Skip - 20 points) : ");
+				String answer = inp.next();
+				tf[q_no].pt_inc(answer, tf[q_no].q_ans);
+			}
+		}
 			System.out.println("\n"+p.f_name + " " +p.l_name + " gets "+ Player.score +" points.");
 			fout.write((p.f_name+" "+p.l_name+"\n").getBytes());		// Write name to file
 			fout.write((String.valueOf(Player.score)+"\n").getBytes());	//Write score to file
