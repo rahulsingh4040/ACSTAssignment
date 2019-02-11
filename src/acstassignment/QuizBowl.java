@@ -3,32 +3,44 @@ package acstassignment;
 import java.util.*;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 
-class Player{
-	public String name;
+/**
+ * ACST Assignment Quiz Bowl 
+ * @author Rahul_Singh
+ *
+ **/
+
+
+/*  Class to store player details */ 
+class Player{					
+	public String f_name;
+	public String l_name;
 	public static int score;
 	public Player() {
-		name = "";
+		f_name = "";
+		l_name = "";
 		score = 0;
 	}
-	public void get_details(String name) {
-		this.name = name;
+	public void get_details(String f_name, String l_name) {
+		this.f_name = f_name;
+		this.l_name = l_name;
 	}
 }
 
 
+
+/* Base Class for questions */
 abstract class Question{
 	
-	String q_txt;
-	String q_ans;
-	String q_type;
-	int max_ques;
+	protected String q_txt;
+	protected String q_ans;
+	protected String q_type;			// TF or SA or MCQ
 	public Question() {
 		super();
 		q_txt = "";
 		q_ans = "";
 		q_type = "";
-		max_ques = 0;
 	}
 	
 	public String get_qtype(BufferedReader fin) throws Exception{
@@ -42,16 +54,18 @@ abstract class Question{
 	public abstract void get_ques(BufferedReader fin) throws Exception;
 	
 	public int check_ans(String ans, String q_ans) {
-		if(ans.equalsIgnoreCase(q_ans))
+		if(ans.equalsIgnoreCase(q_ans))			// Correct answer
 			return 1;
-		else if("Skip".equalsIgnoreCase(ans)) {
+		else if("Skip".equalsIgnoreCase(ans)) {		// Skip Question
 			return 2;
 		}
-		else
+		else									// Incorrect answer
 			return 3;
 	}
 }
 
+
+/* Short answer type Questions */
 
 class QuestionSA extends Question{
 	
@@ -82,6 +96,7 @@ class QuestionSA extends Question{
 	}
 }
 
+/* True False Type Questions */
 class  QuestionTF extends Question{
 	
 	static int marks = 10;
@@ -111,6 +126,7 @@ class  QuestionTF extends Question{
 	}
 }
 
+/* MCQ type questions */
 class QuestionMC extends Question{
 	
 	static int marks = 10;
@@ -141,24 +157,29 @@ class QuestionMC extends Question{
 	}
 }
 
+/* main class*/
 public class QuizBowl {
 	public static void main(String args[]) throws Exception{
 		
 		BufferedReader fin = new BufferedReader(new FileReader("C:\\Users\\Rahul_Singh\\Desktop\\acst assignment\\acstassignment\\src\\acstassignment\\questions.txt"));
+		FileOutputStream fout = new FileOutputStream("C:\\Users\\Rahul_Singh\\Desktop\\acst assignment\\acstassignment\\src\\acstassignment\\result.txt",true);
 		Scanner inp = new Scanner(System.in);
 		Random rand = new Random();
 		
 		Player p = new Player();
 		
-		System.out.print("Enter name : ");
+		System.out.print("Enter First name : ");		
+		String f_name = inp.nextLine();
 		
-		String name = inp.nextLine();
-		p.get_details(name);
-		System.out.println("Hello "+ p.name + "!!!");
+		System.out.print("Enter Last name : ");		
+		String l_name = inp.nextLine();
 		
-		QuestionSA[] sa = new QuestionSA[100];
-		QuestionMC[] mc = new QuestionMC[100];
-		QuestionTF[] tf = new QuestionTF[100];
+		p.get_details(f_name, l_name);
+		System.out.println("Hello "+ p.f_name + " " + p.l_name + "!!!");
+		
+		QuestionSA[] sa = new QuestionSA[100];			// array of class short answer type for storing data from file
+		QuestionMC[] mc = new QuestionMC[100];			// array of class MCQ type for storing data from file
+		QuestionTF[] tf = new QuestionTF[100];			// array of class true false answer type for storing data from file
 		
 		int cnt_mc=0, cnt_sa=0, cnt_tf=0;
 		
@@ -188,6 +209,7 @@ public class QuizBowl {
 		System.out.print("Enter no of questions you want to attempt out of "+cnt_file+" (in numbers):");
 		int cnt = inp.nextInt();
 		
+		/* Logic to randomly choose any of the question from file */
 		List<Integer> arr_sa = new ArrayList<>();
 		for(int m=0;m<cnt_sa;m++) {
 			arr_sa.add(m);
@@ -218,8 +240,8 @@ public class QuizBowl {
 			for(int i=0; i<cnt; i++) {
 				
 				System.out.println();
-				t_no = rand.nextInt(3) + 1;
-				if(t_no==1) {
+				t_no = rand.nextInt(3) + 1;  	// Logic to randomly choose question type
+				if(t_no==1) {					// Short answer type question chosen
 					if(r_sa>=cnt_sa) {
 						i--;
 						continue;
@@ -233,7 +255,7 @@ public class QuizBowl {
 					sa[q_no].pt_inc(answer, sa[q_no].q_ans);
 				}
 				
-				else if(t_no==2) {
+				else if(t_no==2) {				// MCQ type question chosen
 					if(r_mc>=cnt_mc) {
 						i--;
 						continue;
@@ -247,7 +269,7 @@ public class QuizBowl {
 					mc[q_no].pt_inc(answer, mc[q_no].q_ans);
 				}
 				
-				else if(t_no==3) {
+				else if(t_no==3) {			// True false type question chosen
 					if(r_tf>=cnt_tf) {
 						i--;
 						continue;
@@ -262,11 +284,12 @@ public class QuizBowl {
 				}
 			}
 			
-			System.out.println("\n"+p.name + " gets "+ Player.score +" points.");
-
-
-		
-		inp.close();
-		fin.close();
+			System.out.println("\n"+p.f_name + " " +p.l_name + " gets "+ Player.score +" points.");
+			fout.write((p.f_name+" "+p.l_name+"\n").getBytes());		// Write name to file
+			fout.write((String.valueOf(Player.score)+"\n").getBytes());	//Write score to file
+			
+			inp.close();
+			fout.close();
+			fin.close();
 	}
 }
