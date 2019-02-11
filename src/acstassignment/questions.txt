@@ -3,16 +3,10 @@ SA
 What is the capital of India?
 Delhi
 SA
-What does ICC stands for?
-International Cricket Council
-SA
 How many states are there in India?
 29
 TF
 Delhi is Capital of India?
-True
-TF
-Ankit is Rahul's son?
 True
 MCQ
 Which of the following is India's Capital?

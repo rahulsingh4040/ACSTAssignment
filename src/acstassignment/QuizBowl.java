@@ -37,7 +37,6 @@ abstract class Question{
 	protected String q_ans;
 	protected String q_type;			// TF or SA or MCQ
 	public Question() {
-		super();
 		q_txt = "";
 		q_ans = "";
 		q_type = "";
@@ -251,7 +250,7 @@ public class QuizBowl {
 			System.out.print("Enter no of questions you want to attempt out of "+cnt_file+" (in numbers):");
 			int cnt = inp.nextInt();
 			if(cnt>cnt_file || cnt<=0) {
-				while(cnt>cnt_file || cnt<=0) {
+				while(cnt>cnt_file && cnt<=0) {
 					System.out.print("Invalid number of questions in file.... ");
 					System.out.print("Enter again : ");
 					cnt = inp.nextInt();
